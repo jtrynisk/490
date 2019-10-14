@@ -18,14 +18,28 @@ public class Main extends Application {
         Menu fileMenu = new Menu("File");
 
         //Exit Button
-        MenuItem fileMenuItem1 = new MenuItem("Exit");
-        fileMenuItem1.setOnAction(e ->{
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        exitMenuItem.setOnAction(e ->{
             System.exit(0);
+        });
+
+        //New Customer button
+        MenuItem customerMenuItem = new MenuItem("New Customer");
+        customerMenuItem.setOnAction(e -> {
+            NewCustomer ng = new NewCustomer();
+            BorderPane customerPane = new BorderPane();
+            customerPane.setCenter(ng.getrootPane());
+            Scene newCustomerScene = new Scene(customerPane);
+            Stage customerWindow = new Stage();
+            customerWindow.setTitle("New Customer Information");
+            customerWindow.setScene(newCustomerScene);
+            customerWindow.show();
         });
 
 
         //Add everything to the menu
-        fileMenu.getItems().add(fileMenuItem1);
+        fileMenu.getItems().add(customerMenuItem);
+        fileMenu.getItems().add(exitMenuItem);
         mainMenuBar.getMenus().add(fileMenu);
 
         //Add stuff to the main pane
