@@ -2,6 +2,7 @@ package GUI;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -36,15 +37,23 @@ public class Main extends Application {
             customerWindow.show();
         });
 
+        //Search through the customers.
+        MenuItem searchMenuItem = new MenuItem("Search Customers");
+        customerMenuItem.setOnAction(e -> {
+            //logic to search through the customers.
+        });
+
 
         //Add everything to the menu
         fileMenu.getItems().add(customerMenuItem);
+        fileMenu.getItems().add(searchMenuItem);
         fileMenu.getItems().add(exitMenuItem);
         mainMenuBar.getMenus().add(fileMenu);
 
         //Add stuff to the main pane
         BorderPane mainPane = new BorderPane();
         mainPane.setTop(mainMenuBar);
+        mainPane.setCenter(new Label("Please Select a Customer."));
 
 
         Scene root = new Scene(mainPane, 1000, 800);
