@@ -1,6 +1,8 @@
 package GUI;
 
 import Customer.Customer;
+import Database.DBconnector;
+import Database.DBconnector;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -35,10 +37,10 @@ public class NewCustomer
         Label phoneLabel = new Label("Phone: ");
 
         //Setup for the fields
-        TextField firstNameField = new TextField();
-        TextField lastNameField = new TextField();
+        final TextField firstNameField = new TextField();
+        final TextField lastNameField = new TextField();
         TextField addressField = new TextField();
-        TextField emailField = new TextField();
+        final TextField emailField = new TextField();
         TextField cityField = new TextField();
         TextField stateField = new TextField();
         TextField zipField = new TextField();
@@ -119,7 +121,10 @@ public class NewCustomer
             @Override
             public void handle(ActionEvent event) {
                 //Logic for the submit button
-                //Customer newCustomer = new Customer()
+                Customer customer = new Customer(firstNameField.getText(), lastNameField.getText(), emailField.getText());
+                DBconnector db = new DBconnector();
+                db.writeDocument(customer.createDocument());
+                db.closeConnection();
             }
         });
 

@@ -1,5 +1,9 @@
 package Customer;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import org.bson.Document;
+
 public class Customer
 {
     private String firstName, lastName;
@@ -20,12 +24,32 @@ public class Customer
 
     private SpecSheet specs;
 
-    Customer(String firstName, String lastName, String email, SpecSheet specs)
+    public Customer(String firstName, String lastName, String email, SpecSheet specs)
     {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.specs = specs;
+    }
+
+    public Customer(String firstName, String lastName, String email)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public Document createDocument()
+    {
+        Document object = new Document("_id:", firstName + lastName)
+                                            .append("name", firstName + " " + lastName)
+                                            .append("email", email)
+                                            .append("address", new BasicDBObject("street", address)
+                                                                        .append("city", city)
+                                                                        .append("state", state)
+                                                                        .append("zip", zip))
+                                            .append("phone", phone);
+        return object;
     }
 
     public String getFirstName() {

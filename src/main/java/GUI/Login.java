@@ -46,7 +46,7 @@ public class Login
         mainPane.setConstraints(userField, 1, 0);
         mainPane.getChildren().add(userField);
 
-        mainPane.setConstraints(clearButton, 0, 2);
+        mainPane.setConstraints(clearButton, 1, 2);
         mainPane.getChildren().add(clearButton);
 
         mainPane.setConstraints(passwordLabel, 0, 1);
