@@ -2,20 +2,15 @@ package GUI;
 
 import Customer.Customer;
 import Database.DBconnector;
-import Database.DBconnector;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class NewCustomer
 {
@@ -120,7 +115,6 @@ public class NewCustomer
         submitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //Logic for the submit button
                 Customer customer = new Customer(firstNameField.getText(), lastNameField.getText(), emailField.getText());
                 DBconnector db = new DBconnector();
                 db.writeDocument(customer.createDocument());

@@ -8,6 +8,7 @@ public class Customer
 {
     private String firstName, lastName;
     private String email, address, city, state, zip, phone;
+    private SpecSheet specs;
 
     public Customer(String firstName, String lastName, String email, String address, String city, String state, String zip, String phone, SpecSheet specs)
     {
@@ -22,14 +23,15 @@ public class Customer
         this.specs = specs;
     }
 
-    private SpecSheet specs;
-
-    public Customer(String firstName, String lastName, String email, SpecSheet specs)
+    public Customer(String firstName, String lastName, String email, String address, String city, String state, String phone)
     {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.specs = specs;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.phone = phone;
     }
 
     public Customer(String firstName, String lastName, String email)
@@ -41,8 +43,9 @@ public class Customer
 
     public Document createDocument()
     {
-        Document object = new Document("_id:", firstName + lastName)
-                                            .append("name", firstName + " " + lastName)
+        Document object = new Document("_id:", firstName + " " + lastName)
+                                            .append("firstName", firstName)
+                                            .append("lastName", lastName)
                                             .append("email", email)
                                             .append("address", new BasicDBObject("street", address)
                                                                         .append("city", city)

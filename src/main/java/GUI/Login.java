@@ -1,99 +1,99 @@
 package GUI;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import Logger.MyLogger;
 
-public class Login
-{
-    private Stage loginStage;
-    private Scene root;
-    private String username, password;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
-    public void run(Stage loginStage)
+public class Login extends JDialog {
+    private JPanel contentPane;
+    private JButton buttonOK;
+    private JButton buttonCancel;
+    private JTextField usernameField;
+    private JPasswordField passwordField1;
+    private JLabel usernameLabel;
+    private JLabel passwordLabel;
+    private Properties config;
+    private MyLogger logger = new MyLogger();
+
+    public Login() {
+        config = new Properties();
+        try{
+            FileReader fr = new FileReader("/Users/jondntryniski/490/src/main/resources/application.conf");
+            config.load(fr);
+        }catch(IOException e)
+        {
+            logger.makeLog("Couldn't load the properties file");
+        }
+        setContentPane(contentPane);
+        setModal(true);
+        getRootPane().setDefaultButton(buttonOK);
+
+        buttonOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
+
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
+
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
+        // call onCancel() on ESCAPE
+        contentPane.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    private void onOK() {
+        if(checkUserName(usernameField.getText()) && checkPassword(passwordField1.getPassword()))
+        {
+            logger.makeLog("Succesful Login");
+            MainScreen ms = new MainScreen();
+            ms.make();
+        }
+        else {
+            logger.makeLog("Unsuccesful login");
+            FailedLogin fl = new FailedLogin();
+            fl.run();
+            usernameField.setText("");
+            passwordField1.setText("");
+        }
+        dispose();
+    }
+
+    private boolean checkUserName(String username)
     {
-
-        this.loginStage = loginStage;
-        //Main pane for everything to be added to.
-        GridPane mainPane = new GridPane();
-        mainPane.setHgap(5);
-        mainPane.setVgap(5);
-
-        //Labels for login
-        Label userLabel = new Label("Username");
-        Label passwordLabel = new Label("Password");
-
-        //Fields for login
-        TextField userField = new TextField();
-        PasswordField passwordField = new PasswordField();
-
-        //Button for submit and clear
-        Button submitButton = new Button("Submit");
-        Button clearButton = new Button("Clear");
-
-        //Add the labels and fields
-        mainPane.setConstraints(userLabel, 0, 0);
-        mainPane.getChildren().add(userLabel);
-
-        mainPane.setConstraints(userField, 1, 0);
-        mainPane.getChildren().add(userField);
-
-        mainPane.setConstraints(clearButton, 1, 2);
-        mainPane.getChildren().add(clearButton);
-
-        mainPane.setConstraints(passwordLabel, 0, 1);
-        mainPane.getChildren().add(passwordLabel);
-
-        mainPane.setConstraints(passwordField, 1, 1);
-        mainPane.getChildren().add(passwordField);
-
-        mainPane.setConstraints(submitButton, 1, 2);
-        mainPane.getChildren().add(submitButton);
-
-        mainPane.setAlignment(Pos.CENTER);
-
-        //Set the clear button item
-        clearButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                userField.clear();
-                passwordField.clear();
-            }
-        });
-
-        submitButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                username = userField.getText();
-                password = passwordField.getText();
-
-                Stage mainStage = new Stage();
-                MainScreen ms = new MainScreen();
-                Scene mainScene = ms.getPrimaryStage();
-
-                mainStage.setTitle("Lakeview Lanes Pro Shop");
-                mainStage.setScene(mainScene);
-                mainStage.show();
-                loginStage.close();
-            }
-        });
-
-        root = new Scene(mainPane, 500, 400);
-        loginStage.setTitle("Please login");
-        loginStage.setScene(root);
-        loginStage.show();
-
+        if(username.equals(config.getProperty("username")))
+            return true;
+        return false;
     }
 
-    public Scene getRoot() {
-        return root;
+    private boolean checkPassword(char[] password)
+    {
+        if(new String(password).equals(config.getProperty("password")))
+            return true;
+        return false;
     }
+
+    private void onCancel() {
+        // add your code here if necessary
+        dispose();
+    }
+
 }

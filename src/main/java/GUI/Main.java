@@ -1,21 +1,13 @@
 package GUI;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
 
-public class Main extends Application {
+import sun.rmi.runtime.Log;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-
-        Login login = new Login();
-        login.run(primaryStage);
-
-
-    }
-
+public class Main{
 
     public static void main(String[] args) {
-        launch(args);
+        Login dialog = new Login();
+        dialog.pack();
+        dialog.setVisible(true);
     }
 }
