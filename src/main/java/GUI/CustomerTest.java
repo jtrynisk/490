@@ -59,7 +59,7 @@ public class CustomerTest {
     public void make()
     {
         customerFrame.setContentPane(CustomerPanel);
-        customerFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        customerFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         customerFrame.pack();
         customerFrame.setVisible(true);
     }

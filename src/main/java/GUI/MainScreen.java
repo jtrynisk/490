@@ -1,6 +1,5 @@
 package GUI;
 
-import Customer.SpecSheet;
 import Database.DBconnector;
 import Logger.MyLogger;
 import org.bson.Document;
@@ -21,14 +20,16 @@ public class MainScreen {
     private DBconnector db;
     private Document customerDocument;
     private JLabel firstName, lastName, hand, oval, leftFinger, rightFinger, leftReverse, rightReverse, leftForward, rightForward,
-            leftSideway, rightSideway, bridge, span, cutToCutSpan, thumb, thumbForward, thumbReverse, thumbLeft, thumbRight,
+            leftSideway, rightSideway, bridge, span, cutToCutSpan, thumb, thumbType, thumbForward, thumbReverse, thumbLeft, thumbRight,
             degreeOfOval, width, grip;
     private JTextField firstNameField, lastNameField, handField, ovalField, leftFingerField, rightFingerField, leftReverseField,
             rightReverseField, leftForwardField, rightForwardField, leftSidewayField, rightSidewayField, bridgeField, spanField,
-            cutToCutSpanField, thumbField, thumbForwardField, thumbReverseField, thumbLeftField, thumbRightField,
+            cutToCutSpanField, thumbField, thumbTypeField, thumbForwardField, thumbReverseField, thumbLeftField, thumbRightField,
             degreeOfOvalField, widthField, gripField;
     ArrayList<JLabel> labelArrayList;
     ArrayList<JTextField> fieldArrayList;
+
+    //TODO Add a clear button to remove all the customer data. Add edit and save butttons for specs.
 
     public MainScreen()
     {
@@ -52,7 +53,7 @@ public class MainScreen {
 
         makeSearchBar();
 
-        dataPanel = new JPanel(new GridLayout(23, 2, 5, 5));
+        dataPanel = new JPanel(new GridLayout(24, 2, 5, 5));
         makeDataPanel();
         customerPanel.add(dataPanel, BorderLayout.CENTER);
     }
@@ -72,13 +73,6 @@ public class MainScreen {
         });
         customerMenu.add(newCustomer);
 
-        JMenuItem searchCustomer = new JMenuItem("Search Customers");
-        searchCustomer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
     }
 
     private void makeWorkOrderMenu()
@@ -97,25 +91,17 @@ public class MainScreen {
     private void makeSpecSheetMenu()
     {
         menuBar.add(specSheetMenu);
-        JMenuItem createSpec = new JMenuItem("Create New Spec Sheet");
-        JMenuItem editSpec = new JMenuItem("Edit a Spec Sheet");
+        JMenuItem createSpec = new JMenuItem("Create/Edit a Spec Sheet");
 
         createSpec.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //create a spec sheet
-            }
-        });
-
-        editSpec.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //edit a spec sheet
+                CreateSpec cs = new CreateSpec();
+                cs.make();
             }
         });
 
         specSheetMenu.add(createSpec);
-        specSheetMenu.add(editSpec);
 
     }
 
@@ -135,18 +121,11 @@ public class MainScreen {
                 String tempString = searchBar.getText();
 
                 customerDocument = db.findDocument(tempString.split(" ")[0], tempString.split(" ")[1]);
-                System.out.println(customerDocument.toString());
                 logger.makeLog(customerDocument.toString());
                 db.closeConnection();
                 fillData();
             }
         });
-    }
-
-    private void fillData()
-    {
-        firstNameField.setText(customerDocument.getString("firstName"));
-        lastNameField.setText(customerDocument.getString("lastName"));
     }
 
     public void make()
@@ -157,10 +136,33 @@ public class MainScreen {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args)
+    private void fillData()
     {
-        MainScreen ms = new MainScreen();
-        ms.make();
+        //Fill in all the fields.
+        firstNameField.setText(customerDocument.getString("firstName"));
+        lastNameField.setText(customerDocument.getString("lastName"));
+        handField.setText(customerDocument.getString("hand"));
+        leftFingerField.setText(customerDocument.getString("leftFinger"));
+        rightFingerField.setText(customerDocument.getString("rightFinger"));
+        leftReverseField.setText(customerDocument.getString("leftReverse"));
+        rightReverseField.setText(customerDocument.getString("rightReverse"));
+        leftForwardField.setText(customerDocument.getString("leftForward"));
+        rightForwardField.setText(customerDocument.getString("rightForward"));
+        leftSidewayField.setText(customerDocument.getString("leftSideway"));
+        rightSidewayField.setText(customerDocument.getString("rightSideway"));
+        bridgeField.setText(customerDocument.getString("bridge"));
+        spanField.setText(customerDocument.getString("span"));
+        cutToCutSpanField.setText(customerDocument.getString("cutToCut"));
+        thumbTypeField.setText(customerDocument.getString("thumbType"));
+        thumbForwardField.setText(customerDocument.getString("thumbForward"));
+        thumbReverseField.setText(customerDocument.getString("thumbReverse"));
+        thumbLeftField.setText(customerDocument.getString("thumbLeft"));
+        thumbRightField.setText(customerDocument.getString("thumbRight"));
+        degreeOfOvalField.setText(customerDocument.getString("degree"));
+        widthField.setText(customerDocument.getString("width"));
+        gripField.setText(customerDocument.getString("grip"));
+        ovalField.setText(customerDocument.getString("oval"));
+        thumbField.setText(customerDocument.getString("thumb"));
     }
 
     private void makeDataPanel()
@@ -186,9 +188,9 @@ public class MainScreen {
         labelArrayList.add(leftForward);
         rightForward = new JLabel("Right Forward Pitch");
         labelArrayList.add(rightForward);
-        leftSideway = new JLabel("Left Sideways Pitch");
+        leftSideway = new JLabel("Left Lateral Pitch");
         labelArrayList.add(leftSideway);
-        rightSideway = new JLabel("Right Sideway Pitch");
+        rightSideway = new JLabel("Right Lateral Pitch");
         labelArrayList.add(rightSideway);
         bridge = new JLabel("Bridge");
         labelArrayList.add(bridge);
@@ -198,6 +200,8 @@ public class MainScreen {
         labelArrayList.add(cutToCutSpan);
         thumb = new JLabel("Thumb");
         labelArrayList.add(thumb);
+        thumbType = new JLabel("Thumb Type");
+        labelArrayList.add(thumbType);
         thumbForward = new JLabel("Thumb Forward Pitch");
         labelArrayList.add(thumbForward);
         thumbReverse = new JLabel("Thumb Reverse Pitch");
@@ -245,6 +249,8 @@ public class MainScreen {
         cutToCutSpanField = new JTextField();
         fieldArrayList.add(cutToCutSpanField);
         thumbField = new JTextField();
+        thumbTypeField = new JTextField();
+        fieldArrayList.add(thumbTypeField);
         fieldArrayList.add(thumbField);
         thumbForwardField = new JTextField();
         fieldArrayList.add(thumbForwardField);

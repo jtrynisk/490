@@ -1,16 +1,15 @@
 package Customer;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import org.bson.Document;
 
 public class Customer
 {
     private String firstName, lastName;
-    private String email, address, city, state, zip, phone;
+    private String email, address, city, state, phone;
     private SpecSheet specs;
 
-    public Customer(String firstName, String lastName, String email, String address, String city, String state, String zip, String phone, SpecSheet specs)
+    public Customer(String firstName, String lastName, String email, String address, String city, String state, String phone, SpecSheet specs)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -18,7 +17,6 @@ public class Customer
         this.address = address;
         this.city = city;
         this.state = state;
-        this.zip = zip;
         this.phone = phone;
         this.specs = specs;
     }
@@ -49,8 +47,7 @@ public class Customer
                                             .append("email", email)
                                             .append("address", new BasicDBObject("street", address)
                                                                         .append("city", city)
-                                                                        .append("state", state)
-                                                                        .append("zip", zip))
+                                                                        .append("state", state))
                                             .append("phone", phone);
         return object;
     }
