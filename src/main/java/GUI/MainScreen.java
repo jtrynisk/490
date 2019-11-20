@@ -25,7 +25,7 @@ public class MainScreen {
     private JTextField firstNameField, lastNameField, handField, ovalField, leftFingerField, rightFingerField, leftReverseField,
             rightReverseField, leftForwardField, rightForwardField, leftSidewayField, rightSidewayField, bridgeField, spanField,
             cutToCutSpanField, thumbField, thumbTypeField, thumbForwardField, thumbReverseField, thumbLeftField, thumbRightField,
-            degreeOfOvalField, widthField, gripField;
+            degreeOfOvalField, widthField, gripField, searchBar;
     ArrayList<JLabel> labelArrayList;
     ArrayList<JTextField> fieldArrayList;
 
@@ -51,9 +51,10 @@ public class MainScreen {
 
         frame.setJMenuBar(menuBar);
 
+        searchBar = new JTextField();
         makeSearchBar();
 
-        dataPanel = new JPanel(new GridLayout(24, 2, 5, 5));
+        dataPanel = new JPanel(new GridLayout(25, 2, 5, 5));
         makeDataPanel();
         customerPanel.add(dataPanel, BorderLayout.CENTER);
     }
@@ -109,7 +110,6 @@ public class MainScreen {
     {
         JPanel searchPanel = new JPanel(new GridLayout());
         customerPanel.add(searchPanel, BorderLayout.NORTH);
-        JTextField searchBar = new JTextField();
         JButton searchButton = new JButton("Search");
         searchPanel.add(searchBar, 0, 0);
         searchPanel.add(searchButton, 0, 1);
@@ -274,6 +274,20 @@ public class MainScreen {
             fieldArrayList.get(i).setEditable(false);
             dataPanel.add(fieldArrayList.get(i));
         }
+
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(int i = 0; i < fieldArrayList.size(); i++)
+                {
+                    fieldArrayList.get(i).setText("");
+                    searchBar.setText("");
+                }
+            }
+        });
+
+        dataPanel.add(clearButton);
     }
 
 }
