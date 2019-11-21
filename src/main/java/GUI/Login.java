@@ -16,6 +16,7 @@ public class Login extends JDialog {
     private JPasswordField passwordField1;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
+    private boolean loggedIn;
     private Properties config;
     private MyLogger logger = new MyLogger();
 
@@ -48,7 +49,8 @@ public class Login extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                onCancel();
+                dispose();
+                System.exit(0);
             }
         });
 
@@ -64,6 +66,7 @@ public class Login extends JDialog {
         if(checkUserName(usernameField.getText()) && checkPassword(passwordField1.getPassword()))
         {
             logger.makeLog("Succesful Login");
+            loggedIn = true;
             MainScreen ms = new MainScreen();
             ms.make();
         }
@@ -92,8 +95,8 @@ public class Login extends JDialog {
     }
 
     private void onCancel() {
-        // add your code here if necessary
-        dispose();
+        usernameField.setText("");
+        passwordField1.setText("");
     }
 
 }

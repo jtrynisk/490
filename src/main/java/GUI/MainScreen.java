@@ -1,6 +1,7 @@
 package GUI;
 
 import Database.DBconnector;
+import Emailer.Mailer;
 import Logger.MyLogger;
 import org.bson.Document;
 
@@ -16,20 +17,23 @@ public class MainScreen {
     private JFrame frame;
     private JMenuBar menuBar;
     private JMenu customerMenu, workOrderMenu, specSheetMenu;
-    private JPanel customerPanel, dataPanel;
+    private JPanel customerPanel, dataPanel, workOrderPanel, workDataPanel;
     private DBconnector db;
-    private Document customerDocument;
+    private Document customerDocument, workOrderDocument;
     private JLabel firstName, lastName, hand, oval, leftFinger, rightFinger, leftReverse, rightReverse, leftForward, rightForward,
             leftSideway, rightSideway, bridge, span, cutToCutSpan, thumb, thumbType, thumbForward, thumbReverse, thumbLeft, thumbRight,
             degreeOfOval, width, grip;
     private JTextField firstNameField, lastNameField, handField, ovalField, leftFingerField, rightFingerField, leftReverseField,
             rightReverseField, leftForwardField, rightForwardField, leftSidewayField, rightSidewayField, bridgeField, spanField,
             cutToCutSpanField, thumbField, thumbTypeField, thumbForwardField, thumbReverseField, thumbLeftField, thumbRightField,
-            degreeOfOvalField, widthField, gripField, searchBar;
+            degreeOfOvalField, widthField, gripField, searchBar, workSearch;
+    private JLabel workName, workEmail, workBall, workNotes;
+    private JTextField workNameField, workEmailField, workBallField;
+    private JTextArea workNotesArea;
+    private JButton submitButton;
     ArrayList<JLabel> labelArrayList;
     ArrayList<JTextField> fieldArrayList;
-
-    //TODO Add a clear button to remove all the customer data. Add edit and save butttons for specs.
+    private JTabbedPane mainTabbed;
 
     public MainScreen()
     {
@@ -49,14 +53,27 @@ public class MainScreen {
         workOrderMenu = new JMenu("Work Orders");
         makeWorkOrderMenu();
 
+        workOrderPanel = new JPanel(new BorderLayout());
+        workDataPanel = new JPanel(new GridLayout(10, 2, 5, 5));
+        workSearch = new JTextField();
+        makeWorkSearchBar();
+        makeWorkOrderPanel();
+        workOrderPanel.add(workDataPanel, BorderLayout.CENTER);
+
         frame.setJMenuBar(menuBar);
 
         searchBar = new JTextField();
         makeSearchBar();
 
+
         dataPanel = new JPanel(new GridLayout(25, 2, 5, 5));
         makeDataPanel();
         customerPanel.add(dataPanel, BorderLayout.CENTER);
+
+        mainTabbed = new JTabbedPane();
+        mainTabbed.add("Spec Sheets", customerPanel);
+        mainTabbed.add("Work Orders", workOrderPanel);
+
     }
 
     private void makeCustomerMenu()
@@ -83,7 +100,8 @@ public class MainScreen {
         newWorkOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Make a work order
+                NewWorkOrder workOrder = new NewWorkOrder();
+                workOrder.make();
             }
         });
         workOrderMenu.add(newWorkOrder);
@@ -106,6 +124,48 @@ public class MainScreen {
 
     }
 
+    private void makeWorkOrderPanel()
+    {
+        //Create the Labesls, and textfields
+        workName = new JLabel("Name");
+        workNameField = new JTextField();
+        workNameField.setEditable(false);
+        workBall = new JLabel("Ball");
+        workBallField = new JTextField();
+        workBallField.setEditable(false);
+        workEmail = new JLabel("Email");
+        workEmailField = new JTextField();
+        workEmailField.setEditable(false);
+        workNotes = new JLabel("Notes");
+        workNotesArea = new JTextArea();
+        submitButton = new JButton("Work Order Complete");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DBconnector db = new DBconnector();
+                db.remove(workOrderDocument, "WorkOrders");
+                Mailer mailer = new Mailer(workOrderDocument.getString("email"));
+                mailer.send(workOrderDocument.getString("ball"));
+                workNameField.setText("");
+                workBallField.setText("");
+                workEmailField.setText("");
+                workNotesArea.setText("");
+            }
+        });
+
+
+        workDataPanel.add(workName);
+        workDataPanel.add(workNameField);
+        workDataPanel.add(workBall);
+        workDataPanel.add(workBallField);
+        workDataPanel.add(workEmail);
+        workDataPanel.add(workEmailField);
+        workDataPanel.add(workNotes);
+        workDataPanel.add(workNotesArea);
+        workDataPanel.add(submitButton);
+
+    }
+
     private void makeSearchBar()
     {
         JPanel searchPanel = new JPanel(new GridLayout());
@@ -120,7 +180,7 @@ public class MainScreen {
                 db = new DBconnector();
                 String tempString = searchBar.getText();
 
-                customerDocument = db.findDocument(tempString.split(" ")[0], tempString.split(" ")[1]);
+                customerDocument = db.findDocument(tempString.split(" ")[0], tempString.split(" ")[1], "Customers");
                 logger.makeLog(customerDocument.toString());
                 db.closeConnection();
                 fillData();
@@ -128,9 +188,39 @@ public class MainScreen {
         });
     }
 
+    private void makeWorkSearchBar()
+    {
+        JPanel searchPanel = new JPanel(new GridLayout());
+        workOrderPanel.add(searchPanel, BorderLayout.NORTH);
+        JButton searchButton = new JButton("Search");
+        searchPanel.add(workSearch, 0, 0);
+        searchPanel.add(searchButton, 0, 1);
+
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                db = new DBconnector();
+                String tempString = workSearch.getText();
+
+                workOrderDocument = db.findDocument(tempString.split(" ")[0], tempString.split(" ")[1], "WorkOrders");
+                logger.makeLog(workOrderDocument.toString());
+                db.closeConnection();
+                fillWorkOrderData();
+            }
+        });
+    }
+
+    private void fillWorkOrderData()
+    {
+        workNameField.setText(workOrderDocument.getString("firstName") + " " + workOrderDocument.getString("lastName"));
+        workBallField.setText(workOrderDocument.getString("ball"));
+        workEmailField.setText(workOrderDocument.getString("email"));
+        workNotesArea.setText(workOrderDocument.getString("notes"));
+    }
+
     public void make()
     {
-        frame.setContentPane(new MainScreen().customerPanel);
+        frame.setContentPane(new MainScreen().mainTabbed);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

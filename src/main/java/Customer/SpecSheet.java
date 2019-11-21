@@ -42,8 +42,8 @@ public class SpecSheet
     public void createDocument(String firstName, String lastName)
     {
         DBconnector db = new DBconnector();
-        Document temp = db.findDocument(firstName, lastName);
-        db.remove(temp);
+        Document temp = db.findDocument(firstName, lastName, "Customers");
+        db.remove(temp, "Customers");
         temp.append("hand", hand).append("oval", oval).append("leftFinger", leftFinger).append("rightFinger", rightFinger).append("leftReverse", leftReverse)
                 .append("rightReverse", rightReverse).append("leftForward", leftForward).append("rightForward", rightForward).append("leftSideway", leftSideway)
                 .append("rightSideway", rightSideway).append("bridge", bridge).append("span", span).append("cutToCut", cutToCutSpan).append("thumb", thumb)

@@ -24,7 +24,6 @@ public class DBconnector
 
     public DBconnector()
     {
-        //TODO add this to the application.conf file
         config = new Properties();
         logger = new MyLogger();
         try
@@ -48,17 +47,24 @@ public class DBconnector
         customers.insertOne(d);
     }
 
-    public void remove(Document d)
+    public void writeToWorkOrder(Document d)
     {
-        MongoCollection customers = database.getCollection("Customers");
-        customers.deleteOne(d);
+        MongoCollection workOrders = database.getCollection("WorkOrders");
+        workOrders.insertOne(d);
+
     }
 
-    public Document findDocument(String firstName, String lastName)
+    public void remove(Document d, String db)
+    {
+        MongoCollection collection = database.getCollection(db);
+        collection.deleteOne(eq("_id", d.get("_id")));
+    }
+
+    public Document findDocument(String firstName, String lastName, String db)
     {
         FindIterable temp = null;
-        MongoCollection customer = database.getCollection("Customers");
-        temp = customer.find(eq("lastName", lastName));
+        MongoCollection collection = database.getCollection(db);
+        temp = collection.find(eq("lastName", lastName));
         ArrayList<Document> documents = new ArrayList<>();
         temp.into(documents);
 
@@ -69,6 +75,7 @@ public class DBconnector
         }
         return null;
     }
+
 
     public void closeConnection()
     {
